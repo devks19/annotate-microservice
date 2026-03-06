@@ -1,0 +1,189 @@
+version: "3.9"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER: guest
+      - RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  postgres-auth:
+    image: postgres:16
+    container_name: postgres-auth
+    environment:
+      POSTGRES_DB: auth-service-annotate
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    networks:
+      - annotate-microservice-net
+
+  postgres-access:
+    image: postgres:16
+    container_name: postgres-access
+    environment:
+      POSTGRES_DB: access-service-annotate
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5434:5432"
+    volumes:
+      - access-db-data:/var/lib/postgresql/data
+    networks:
+      - annotate-microservice-net
+
+  postgres-video:
+    image: postgres:16
+    container_name: postgres-video
+    environment:
+      POSTGRES_DB: video-service-annotate
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5435:5432"
+    volumes:
+      - video-db-data:/var/lib/postgresql/data
+    networks:
+      - annotate-microservice-net
+
+  postgres-feedback:
+    image: postgres:16
+    container_name: postgres-feedback
+    environment:
+      POSTGRES_DB: feedback-service-annotate
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5436:5432"
+    volumes:
+      - feedback-db-data:/var/lib/postgresql/data
+    networks:
+      - annotate-microservice-net
+
+
+
+  service-registry:
+    build: ./Service-Registry
+    container_name: devks19/service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+
+  config-server:
+    build: ./Config-Server
+    container_name: devks19/config-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-registry
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+    environment:
+      CONFIG_SERVER_USERNAME: ${CONFIG_SERVER_USERNAME}
+      CONFIG_SERVER_PASSWORD: ${CONFIG_SERVER_PASSWORD}
+
+  access-service:
+    build: ./Access-Service
+    container_name: devks19/access-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - config-server
+      - postgres-access
+      - service-registry
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+
+  auth-service:
+    build: ./Auth-Service
+    container_name: devks19/auth-service
+    ports:
+      - "8089:8089"
+    depends_on:
+      - config-server
+      - postgres-auth
+      - service-registry
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+
+  feedback-service:
+    build: ./Feedback-Service
+    container_name: devks19/feedback-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - config-server
+      - postgres-feedback
+      - service-registry
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+
+  media-service:
+    build: ./Media-Service
+    container_name: devks19/media-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - service-registry
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+
+  video-service:
+    build: ./Video-Service
+    container_name: devks19/video-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - postgres-video
+      - service-registry
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+
+  api-gateway:
+    build: ./API-Gateway
+    container_name: devks19/api-gateway
+    ports:
+      - "8088:8088"
+    depends_on:
+      - config-server
+      - service-registry
+      - access-service
+      - auth-service
+      - feedback-service
+      - media-service
+      - video-service
+    networks:
+      - annotate-microservice-net
+    restart: unless-stopped
+
+
+networks:
+  annotate-microservice-net:
+    driver: bridge
+
+volumes:
+  auth-db-data:
+  access-db-data:
+  video-db-data:
+  feedback-db-data:
+  rabbitmq-data:
