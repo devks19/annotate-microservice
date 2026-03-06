@@ -3,8 +3,7 @@ name: Annotate CI/CD Pipeline
 on:
 push:
 branches: ["main"]
-pull_request:
-branches: ["main"]
+
 
 jobs:
 build:
@@ -43,9 +42,7 @@ steps:
       key: ${{ secrets.EC2_SSH_KEY }}
       script: |
         cd /home/ubuntu/annotate
-
         export CONFIG_SERVER_USERNAME=${{ secrets.CONFIG_SERVER_USERNAME }}
         export CONFIG_SERVER_PASSWORD=${{ secrets.CONFIG_SERVER_PASSWORD }}
-
         docker compose pull
         docker compose up -d
