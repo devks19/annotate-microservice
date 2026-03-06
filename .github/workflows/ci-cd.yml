@@ -40,6 +40,12 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+    - name: Export environment variables
+      run: |
+        echo "CONFIG_SERVER_USERNAME=${{ secrets.CONFIG_SERVER_USERNAME }}" >> $GITHUB_ENV
+        echo "CONFIG_SERVER_PASSWORD=${{ secrets.CONFIG_SERVER_PASSWORD }}" >> $GITHUB_ENV
+
+
     - name: Build and push images
       run: |
         docker compose build
