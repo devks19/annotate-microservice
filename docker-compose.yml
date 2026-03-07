@@ -189,7 +189,7 @@
 #   rabbitmq-data:
 
 
-version: "3.9"
+# version: "3.9"
 
 services:
 
@@ -264,6 +264,7 @@ services:
 
 
   service-registry:
+    build: ./Service-Registry
     image: devks19/service-registry:latest
     ports:
       - "8761:8761"
@@ -272,6 +273,7 @@ services:
     restart: unless-stopped
 
   config-server:
+    build: ./Config-Server
     image: devks19/config-server:latest
     ports:
       - "8080:8080"
@@ -285,6 +287,7 @@ services:
       CONFIG_SERVER_PASSWORD: ${CONFIG_SERVER_PASSWORD}
 
   access-service:
+    build: ./Access-Service
     image: devks19/access-service:latest
     ports:
       - "8087:8087"
@@ -297,6 +300,7 @@ services:
     restart: unless-stopped
 
   auth-service:
+    build: ./Auth-Service
     image: devks19/auth-service:latest
     ports:
       - "8089:8089"
@@ -309,6 +313,7 @@ services:
     restart: unless-stopped
 
   feedback-service:
+    build: ./Feedback-Service
     image: devks19/feedback-service:latest
     ports:
       - "8084:8084"
@@ -321,6 +326,7 @@ services:
     restart: unless-stopped
 
   media-service:
+    build: ./Media-Service
     image: devks19/media-service:latest
     ports:
       - "8083:8083"
@@ -332,6 +338,7 @@ services:
     restart: unless-stopped
 
   video-service:
+    build: ./Video-Service
     image: devks19/video-service:latest
     ports:
       - "8082:8082"
@@ -344,6 +351,7 @@ services:
     restart: unless-stopped
 
   api-gateway:
+    build: ./API-Gateway
     image: devks19/api-gateway:latest
     ports:
       - "8088:8088"
