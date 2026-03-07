@@ -58,7 +58,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd /home/ubuntu/annotate
+          cd /home/ubuntu/annotate-microservice
           export CONFIG_SERVER_USERNAME=${{ secrets.CONFIG_SERVER_USERNAME }}
           export CONFIG_SERVER_PASSWORD=${{ secrets.CONFIG_SERVER_PASSWORD }}
           docker-compose pull
