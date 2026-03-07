@@ -16,22 +16,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: 21
+    # - name: Setup Java
+    #   uses: actions/setup-java@v4
+    #   with:
+    #     distribution: temurin
+    #     java-version: 21
 
-    - name: Build Spring Boot services
-      run: |
-        cd Service-Registry && mvn clean package -DskipTests && cd ..
-        cd Config-Server && mvn clean package -DskipTests && cd ..
-        cd API-Gateway && mvn clean package -DskipTests && cd ..
-        cd Auth-Service && mvn clean package -DskipTests && cd ..
-        cd Access-Service && mvn clean package -DskipTests && cd ..
-        cd Video-Service && mvn clean package -DskipTests && cd ..
-        cd Media-Service && mvn clean package -DskipTests && cd ..
-        cd Feedback-Service && mvn clean package -DskipTests && cd ..
+    # - name: Build Spring Boot services
+    #   run: |
+    #     cd Service-Registry && mvn clean package -DskipTests && cd ..
+    #     cd Config-Server && mvn clean package -DskipTests && cd ..
+    #     cd API-Gateway && mvn clean package -DskipTests && cd ..
+    #     cd Auth-Service && mvn clean package -DskipTests && cd ..
+    #     cd Access-Service && mvn clean package -DskipTests && cd ..
+    #     cd Video-Service && mvn clean package -DskipTests && cd ..
+    #     cd Media-Service && mvn clean package -DskipTests && cd ..
+    #     cd Feedback-Service && mvn clean package -DskipTests && cd ..
 
 
     - name: Login to Docker Hub
@@ -40,10 +40,10 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Export environment variables
-      run: |
-        echo "CONFIG_SERVER_USERNAME=${{ secrets.CONFIG_SERVER_USERNAME }}" >> $GITHUB_ENV
-        echo "CONFIG_SERVER_PASSWORD=${{ secrets.CONFIG_SERVER_PASSWORD }}" >> $GITHUB_ENV
+    # - name: Export environment variables
+    #   run: |
+    #     echo "CONFIG_SERVER_USERNAME=${{ secrets.CONFIG_SERVER_USERNAME }}" >> $GITHUB_ENV
+    #     echo "CONFIG_SERVER_PASSWORD=${{ secrets.CONFIG_SERVER_PASSWORD }}" >> $GITHUB_ENV
 
 
     - name: Build and push images
